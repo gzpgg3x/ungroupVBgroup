@@ -1,0 +1,68 @@
+Sub testCollapse()
+    Reset
+    Dim a, b, c, d, e, totExstGrp As Integer
+    Dim z As String
+    Dim exstGrp(5000) As String
+    
+    Worksheets("Page1_1").Select
+    '//Ungroup all existing grouping
+    
+    On Error Resume Next
+    For I = 1 To 8
+        Selection.Rows.Ungroup
+    Next
+    
+'    Cells.Select
+'
+'    For a = 1 To 8
+'        Selection.Rows.Ungroup
+'        On Error Resume Next
+'        Exit For
+'    Next a
+                
+    
+    '//TO GROUP
+    For a = 27 To 2 Step -1
+        For b = 2 To 10160
+            If Len(Cells(b, a)) = 0 Then
+                For c = a - 1 To 1 Step -1
+                    If Len(Cells(b, c)) > 0 And IsNumeric(Cells(b, c)) Then
+                        Exit For
+                    End If
+                    If Len(Cells(b, c)) > 0 And Not IsNumeric(Cells(b, c)) Then
+                        For d = b - 1 To 2 Step -1
+                            If Len(Cells(d, c)) > 0 And (Cells(d, c) = 1 Or Not IsNumeric(Cells(d, c))) Then
+                                z = Trim(Str(d)) & ":" & Trim(Str(b - 1))
+                                If totExstGrp = 0 Then
+                                    totExstGrp = totExstGrp + 1
+                                    exstGrp(totExstGrp) = z
+'                                    MsgBox b & " " & c & " " & a & " " & z
+                                    Rows(z).Group
+'                                    ActiveSheet.Outline.ShowLevels RowLevels:=1
+                                ElseIf totExstGrp > 0 Then
+                                    For e = 1 To totExstGrp
+                                        If z = exstGrp(e) Then
+                                            Exit For
+                                        End If
+                                        If e = totExstGrp Then
+                                            totExstGrp = totExstGrp + 1
+                                            exstGrp(totExstGrp) = z
+'                                            MsgBox b & " " & c & " " & a & " " & z
+                                            Rows(z).Group
+'                                            ActiveSheet.Outline.ShowLevels RowLevels:=1
+                                        End If
+                                    Next e
+                                End If
+                                Exit For
+                            End If
+                        Next d
+                        Exit For
+                    End If
+                    
+                Next c
+            End If
+        Next b
+    Next a
+
+'    MsgBox totExstGrp
+End Sub
